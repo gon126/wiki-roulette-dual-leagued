@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WikiRoulette</title>
+    <style>
+        :root {
+            --bg-color: #fafafa;
+            --text-color: #111111;
+            --accent-color: #007aff;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .lang-switcher {
+            position: absolute;
+            top: 30px;
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 4px;
+            border-radius: 20px;
+        }
+
+        .lang-btn {
+            background: none;
+            border: none;
+            padding: 6px 16px;
+            border-radius: 16px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn.active {
+            background-color: #ffffff;
+            color: var(--text-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+        }
+
+        p.subtitle {
+            font-size: 1.15rem;
+            color: #666;
+            margin-bottom: 40px;
+            font-weight: 400;
+        }
+
+        .roll-btn {
+            background-color: var(--text-color);
+            color: #ffffff;
+            border: none;
+            padding: 16px 36px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .roll-btn:hover {
+            transform: translateY(-2px);
+            background-color: #222;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .roll-btn:active {
+            transform: translateY(1px);
+        }
+
+        #articleLink {
+            margin-top: 40px;
+            min-height: 60px;
+        }
+
+        #articleLink a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-size: 1.25rem;
+            font-weight: 600;
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 8px;
+            background: #ffffff;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0,0,0,0.03);
+            animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        #articleLink a:hover {
+            opacity: 0.85;
+        }
+
+        @keyframes slideUpFade {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="audio-epic" src="http://googleusercontent.com/file_content/0" preload="auto"></audio>
+    <audio id="audio-abandon" src="http://googleusercontent.com/file_content/1" preload="auto"></audio>
+    <audio id="audio-obiwan" src="http://googleusercontent.com/file_content/2" preload="auto"></audio>
+
+    <div class="lang-switcher">
+        <button id="btn-en" class="lang-btn active" onclick="setLanguage('en')">English</button>
+        <button id="btn-he" class="lang-btn" onclick="setLanguage('he')">עברית</button>
+    </div>
+
+    <div class="container">
+        <h1 id="title">WikiRoulette</h1>
+        <p id="subtitle" class="subtitle">Discover something new on Wikipedia</p>
+        <button id="randomArticleButton" class="roll-btn">Roll a Random Article</button>
+        <div id="articleLink"></div>
+    </div>
+     
+    <script>
+        let currentLang = 'en';
+
+        const content = {
+            en: {
+                title: "WikiRoulette",
+                subtitle: "Discover something new on Wikipedia",
+                button: "Roll a Random Article",
+                linkText: "✨ Click here to read your random article! ✨",
+                url: "https://en.wikipedia.org/wiki/Special:Random",
+                rickUrl: "https://en.wikipedia.org/wiki/Rick_Astley",
+                rickText: "🎤 Never Gonna Give You Up! You rolled Rick Astley! 🎤",
+                dir: "ltr"
+            },
+            he: {
+                title: "רולטת ויקי",
+                subtitle: "גלו משהו חדש בוויקיפדיה בכל לחיצה",
+                button: "קבל מאמר אקראי",
+                linkText: "✨ לחצו כאן כדי לקרוא את המאמר שלכם! ✨",
+                url: "https://he.wikipedia.org/wiki/מיוחד:אקראי",
+                rickUrl: "https://he.wikipedia.org/wiki/%D7%A8%D7%99%D7%A7_%D7%90%D7%A1%D7%98%D7%9C%D7%99",
+                rickText: "🎤 קיבלתם את ריק אסטלי! Never Gonna Give You Up! 🎤",
+                dir: "rtl"
+            }
+        };
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+            document.documentElement.dir = content[lang].dir;
+            
+            document.getElementById('title').textContent = content[lang].title;
+            document.getElementById('subtitle').textContent = content[lang].subtitle;
+            document.getElementById('randomArticleButton').textContent = content[lang].button;
+            
+            document.getElementById('articleLink').innerHTML = '';
+
+            document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${lang}`).classList.add('active');
+        }
+       
+     
+        // Handle Main Button Roll Click
+        document.getElementById('randomArticleButton').onclick = function() {
+            // 1. Play Obi-Wan sound instantly on click
+            const obiwanAudio = document.getElementById('audio-obiwan');
+            obiwanAudio.currentTime = 0;
+            obiwanAudio.play().catch(err => console.log("Audio playback waiting for user gesture interaction."));
+
+            const langData = content[currentLang];
+            
+            // 2. Compute 1/100 chance (1% probability)
+            const isRickRoll = Math.floor(Math.random() * 100) === 0;
+            
+            let finalUrl = langData.url;
+            let finalPlaceholderText = langData.linkText;
+
+            if (isRickRoll) {
+                finalUrl = langData.rickUrl;
+                finalPlaceholderText = langData.rickText;
+
+                // Play the epic background track if lucky event triggers
+                const epicAudio = document.getElementById('audio-epic');
+                epicAudio.currentTime = 0;
+                epicAudio.play().catch(err => console.log("Audio playback blocked."));
+            }
+
+            // 3. Render Link element injected with the navigation audio sound hook
+            document.getElementById('articleLink').innerHTML = `
+                <a href="${finalUrl}" target="_blank" rel="noopener noreferrer" onclick="handleLinkClick()">
+                    ${finalPlaceholderText}
+                </a>`;
+        };
+
+        // Handle Generated Article Link Click
+        function handleLinkClick() {
+            const abandonAudio = document.getElementById('audio-abandon');
+            abandonAudio.currentTime = 0;
+            abandonAudio.play().catch(err => console.log("Audio playback blocked."));
+        }
+    </script>
+</body>
+</html>
